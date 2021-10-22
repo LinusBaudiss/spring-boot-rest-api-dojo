@@ -20,31 +20,25 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Optional<Employee> findEmployeeById(Long id) {
-        Employee employee = data
-                .stream()
-                .filter(e -> id.equals(e.getId()))
-                .findFirst()
-                .orElse(null);
-
-        if (employee == null) {
-            return Optional.empty();
-        }
-        return Optional.of(employee);
+        //TODO
+        return null;
     }
 
     @Override
     public Employee saveEmployee(Employee employee) {
-        data.add(employee);
-        return employee;
+        //TODO
+        return null;
     }
 
     @Override
     public boolean removeEmployeeById(Long id) {
-        return data.removeIf(e -> id.equals(e.getId()));
+        //TODO
+        return false;
     }
 
     @Override
     public List<Employee> findEmployees() {
-        return data;
+        //TODO
+        return null;
     }
 }
