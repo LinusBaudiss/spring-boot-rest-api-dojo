@@ -1,0 +1,81 @@
+GET http://localhost:8080/api/v1/employees
+Accept: application/json
+
+###
+
+GET http://localhost:8080/api/v1/employees/1
+Accept: application/json
+
+###
+
+GET http://localhost:8080/api/v1/employees/3
+Accept: application/json
+
+###
+
+PUT http://localhost:8080/api/v1/employees/1
+Accept: application/json
+Content-Type: application/json
+
+{
+"name": "Peter Müller",
+"role": "Chef Chef"
+}
+
+###
+
+PUT http://localhost:8080/api/v1/employees/3
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "Petra Klein",
+  "role": "Aushilfe"
+}
+
+###
+
+POST http://localhost:8080/api/v1/employees
+Accept: application/json
+Content-Type: application/json
+
+{
+  "id": 4,
+  "name": "Luke Skywalker",
+  "role": "Cooler Typ"
+}
+
+###
+
+POST http://localhost:8080/api/v1/employees
+Accept: application/json
+Content-Type: application/json
+
+{
+"id": 2,
+"name": "fail",
+"role": "fail"
+}
+
+###
+
+POST http://localhost:8080/api/v1/employees
+Accept: application/json
+Content-Type: application/json
+
+{
+"name": "fail",
+"role": "fail"
+}
+
+###
+
+DELETE http://localhost:8080/api/v1/employees/1
+Accept: application/json
+
+###
+
+DELETE http://localhost:8080/api/v1/employees/5
+Accept: application/json
+
+###
