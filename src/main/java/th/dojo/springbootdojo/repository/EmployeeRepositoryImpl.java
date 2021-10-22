@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class EmployeeRepositoryImpl implements EmployeeRepository{
+public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     private List<Employee> employees;
 
@@ -19,10 +19,10 @@ public class EmployeeRepositoryImpl implements EmployeeRepository{
     }
 
     @Override
-    public Optional<Employee> findById(Long id) {
+    public Optional<Employee> findEmployeeById(Long id) {
         Employee employee = employees
                 .stream()
-                .filter(e -> e.getId() == id)
+                .filter(e -> id.equals(e.getId()))
                 .findFirst()
                 .orElse(null);
 
@@ -33,18 +33,23 @@ public class EmployeeRepositoryImpl implements EmployeeRepository{
     }
 
     @Override
-    public Employee save(Employee employee){
+    public Employee saveEmployee(Employee employee) {
         employees.add(employee);
-        return  employee;
+        return employee;
     }
 
     @Override
-    public boolean removeById(Long id){
-        return employees.removeIf(e -> e.getId() == id);
+    public boolean removeEmployeeById(Long id) {
+        return employees.removeIf(e -> id.equals(e.getId()));
     }
 
     @Override
-    public List<Employee> getEmployees() {
+    public List<Employee> findEmployees() {
         return employees;
+    }
+
+    //only for the tests
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
     }
 }

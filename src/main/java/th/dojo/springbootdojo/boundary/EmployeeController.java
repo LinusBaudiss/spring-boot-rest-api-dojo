@@ -9,17 +9,17 @@ import java.util.List;
 public interface EmployeeController {
 
     @GetMapping("/employees")
-    List<Employee> all();
+    List<Employee> getAllEmployees();
 
     @GetMapping("/employees/{id}")
-    Employee one(@PathVariable Long id);
+    Employee getEmployeeById(@PathVariable Long id);
 
     @PutMapping("/employees/{id}")
-    Employee changeEmployee(@RequestBody Employee newEmployee,
-                            @PathVariable Long id);
+    Employee putEmployeeById(@RequestBody Employee newEmployee,
+                             @PathVariable Long id);
 
     @PostMapping("/employees")
-    Employee newEmployee(@RequestBody Employee newEmployee);
+    Employee postEmployee(@RequestBody Employee newEmployee);
 
     @DeleteMapping("/employees/{id}")
     void deleteEmployee(@PathVariable Long id);

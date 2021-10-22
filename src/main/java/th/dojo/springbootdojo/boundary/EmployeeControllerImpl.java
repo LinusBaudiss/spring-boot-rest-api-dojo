@@ -21,20 +21,20 @@ public class EmployeeControllerImpl implements EmployeeController {
     }
 
     @Override
-    public List<Employee> all() {
-        return repository.getEmployees();
+    public List<Employee> getAllEmployees() {
+        return repository.findEmployees();
     }
 
     @Override
-    public Employee one(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "employee not found"));
+    public Employee getEmployeeById(Long id) {
+        return repository.findEmployeeById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @Override
-    public Employee changeEmployee(Employee newEmployee,
-                                   Long id) {
-        return repository.findById(id)
+    public Employee putEmployeeById(Employee newEmployee,
+                                    Long id) {
+        return repository.findEmployeeById(id)
                 .map(employee -> {
                     employee.setName(newEmployee.getName());
                     employee.setRole(newEmployee.getRole());
@@ -42,28 +42,28 @@ public class EmployeeControllerImpl implements EmployeeController {
                 })
                 .orElseGet(() -> {
                     newEmployee.setId(id);
-                    return repository.save(newEmployee);
+                    return repository.saveEmployee(newEmployee);
                 });
     }
 
     @Override
-    public Employee newEmployee(Employee newEmployee) {
+    public Employee postEmployee(Employee newEmployee) {
         Long id = newEmployee.getId();
         if (id != null) {
-            Optional<Employee> employee = repository.findById(id);
+            Optional<Employee> employee = repository.findEmployeeById(id);
             if (employee.isPresent()) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "employee with id: " + id + "already in list");
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
             } else {
-                return repository.save(newEmployee);
+                return repository.saveEmployee(newEmployee);
             }
         }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "employee needs a id");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
     @Override
     public void deleteEmployee(Long id) {
-        if (!repository.removeById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "employee not found");
+        if (!repository.removeEmployeeById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 }

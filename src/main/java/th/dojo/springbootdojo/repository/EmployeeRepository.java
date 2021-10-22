@@ -7,12 +7,12 @@ import java.util.Optional;
 
 public interface EmployeeRepository {
 
-    Optional<Employee> findById(Long id);
+    Optional<Employee> findEmployeeById(Long id);
 
-    Employee save(Employee employee);
+    Employee saveEmployee(Employee employee);
 
-    boolean removeById(Long id);
+    boolean removeEmployeeById(Long id);
 
-    List<Employee> getEmployees();
+    List<Employee> findEmployees();
 
 }
