@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import th.dojo.springbootdojo.model.Employee;
-import th.dojo.springbootdojo.repository.EmployeeRepositoryImpl;
+import th.dojo.springbootdojo.service.EmployeeServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,10 +13,10 @@ import java.util.Optional;
 @RestController
 public class EmployeeControllerImpl implements EmployeeController {
 
-    private final EmployeeRepositoryImpl repository;
+    private final EmployeeServiceImpl repository;
 
     @Autowired
-    public EmployeeControllerImpl(EmployeeRepositoryImpl repository) {
+    public EmployeeControllerImpl(EmployeeServiceImpl repository) {
         this.repository = repository;
     }
 

@@ -9,7 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import th.dojo.springbootdojo.model.Employee;
-import th.dojo.springbootdojo.repository.EmployeeRepositoryImpl;
+import th.dojo.springbootdojo.service.EmployeeServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +33,7 @@ class EmployeeControllerTest {
     @Autowired
     private EmployeeControllerImpl controller;
     @MockBean
-    private EmployeeRepositoryImpl repo;
+    private EmployeeServiceImpl repo;
 
     @Autowired
     private ObjectMapper mapper;
