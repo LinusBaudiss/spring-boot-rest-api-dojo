@@ -20,32 +20,26 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     @Override
     public Optional<Employee> findEmployeeById(Long id) {
-        Employee employee = employees
-                .stream()
-                .filter(e -> id.equals(e.getId()))
-                .findFirst()
-                .orElse(null);
-
-        if (employee == null) {
-            return Optional.empty();
-        }
-        return Optional.of(employee);
+        //TODO
+        return null;
     }
 
     @Override
     public Employee saveEmployee(Employee employee) {
-        employees.add(employee);
-        return employee;
+        //TODO
+        return null;
     }
 
     @Override
     public boolean removeEmployeeById(Long id) {
-        return employees.removeIf(e -> id.equals(e.getId()));
+        //TODO
+        return false;
     }
 
     @Override
     public List<Employee> findEmployees() {
-        return employees;
+        //TODO
+        return null;
     }
 
     //only for the tests

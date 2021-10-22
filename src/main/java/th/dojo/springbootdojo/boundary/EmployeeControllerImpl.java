@@ -22,48 +22,31 @@ public class EmployeeControllerImpl implements EmployeeController {
 
     @Override
     public List<Employee> getAllEmployees() {
-        return repository.findEmployees();
+        //TODO
+        return null;
     }
 
     @Override
     public Employee getEmployeeById(Long id) {
-        return repository.findEmployeeById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        //TODO
+        return null;
     }
 
     @Override
     public Employee putEmployeeById(Employee newEmployee,
                                     Long id) {
-        return repository.findEmployeeById(id)
-                .map(employee -> {
-                    employee.setName(newEmployee.getName());
-                    employee.setRole(newEmployee.getRole());
-                    return employee;
-                })
-                .orElseGet(() -> {
-                    newEmployee.setId(id);
-                    return repository.saveEmployee(newEmployee);
-                });
+        //TODO
+        return null;
     }
 
     @Override
     public Employee postEmployee(Employee newEmployee) {
-        Long id = newEmployee.getId();
-        if (id != null) {
-            Optional<Employee> employee = repository.findEmployeeById(id);
-            if (employee.isPresent()) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-            } else {
-                return repository.saveEmployee(newEmployee);
-            }
-        }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        //TODO
+        return null;
     }
 
     @Override
     public void deleteEmployee(Long id) {
-        if (!repository.removeEmployeeById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        //TODO
     }
 }
