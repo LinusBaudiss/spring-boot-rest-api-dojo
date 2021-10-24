@@ -33,7 +33,7 @@ class EmployeeControllerTest {
     @Autowired
     private EmployeeControllerImpl controller;
     @MockBean
-    private EmployeeServiceImpl repo;
+    private EmployeeServiceImpl service;
 
     @Autowired
     private ObjectMapper mapper;
@@ -48,7 +48,7 @@ class EmployeeControllerTest {
         //arrange
         Employee employee1 = new Employee(1L, "test", "test");
         Employee employee2 = new Employee(2L, "test test", "test test");
-        when(repo.findEmployees()).thenReturn(List.of(employee1, employee2));
+        when(service.findEmployees()).thenReturn(List.of(employee1, employee2));
 
         //act
         mockMvc.perform(get(BASE_URL)).andDo(print())
@@ -63,7 +63,7 @@ class EmployeeControllerTest {
     void getEmployeeByIdTest() throws Exception {
         //arrange
         Employee testEmployee = new Employee(1L, "test", "test");
-        when(repo.findEmployeeById(1L)).thenReturn(Optional.of(testEmployee));
+        when(service.findEmployeeById(1L)).thenReturn(Optional.of(testEmployee));
 
         //act
         mockMvc.perform(get(BASE_URL + "/1")).andDo(print())
@@ -76,7 +76,7 @@ class EmployeeControllerTest {
     @Test
     void getEmployeeByIdFailsTest() throws Exception {
         //arrange
-        when(repo.findEmployeeById(1L)).thenReturn(Optional.empty());
+        when(service.findEmployeeById(1L)).thenReturn(Optional.empty());
 
         //act
         mockMvc.perform(get(BASE_URL + "/1")).andDo(print())
@@ -89,7 +89,7 @@ class EmployeeControllerTest {
     void putAlreadyExisitingEmployeeTest() throws Exception {
         //arrange
         Employee testEmployee = new Employee(1L, "test", "test");
-        when(repo.findEmployeeById(1L)).thenReturn(Optional.of(testEmployee));
+        when(service.findEmployeeById(1L)).thenReturn(Optional.of(testEmployee));
 
         String newEmployee = mapper.writeValueAsString(new Employee(1L, "test test", "test test"));
 
@@ -110,8 +110,8 @@ class EmployeeControllerTest {
         //arrange
         Employee employee = new Employee(1L, "test", "test");
         String newEmployee = mapper.writeValueAsString(employee);
-        when(repo.findEmployeeById(1L)).thenReturn(Optional.empty());
-        when(repo.saveEmployee(employee)).thenReturn(employee);
+        when(service.findEmployeeById(1L)).thenReturn(Optional.empty());
+        when(service.createEmployee(employee)).thenReturn(employee);
 
         //act
         mockMvc.perform(
@@ -128,10 +128,10 @@ class EmployeeControllerTest {
     @Test
     void postNewEmployeeTest() throws Exception {
         //arrange
-        Employee employee = new Employee(1L, "test", "test");
+        Employee employee = new Employee("test", "test");
+        Employee expectedEmployee = new Employee(1L, "test", "test");
         String newEmployee = mapper.writeValueAsString(employee);
-        when(repo.findEmployeeById(1L)).thenReturn(Optional.empty());
-        when(repo.saveEmployee(employee)).thenReturn(employee);
+        when(service.createEmployee(employee)).thenReturn(employee);
 
         //act
         mockMvc.perform(
@@ -146,43 +146,9 @@ class EmployeeControllerTest {
     }
 
     @Test
-    void postEmployeeWithAlreadyExisitingIdTest() throws Exception {
-        //arrange
-        Employee employee = new Employee(1L, "test", "test");
-        String newEmployee = mapper.writeValueAsString(employee);
-        when(repo.findEmployeeById(1L)).thenReturn(Optional.of(employee));
-
-        //act
-        mockMvc.perform(
-                        post(BASE_URL)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(newEmployee)
-                ).andDo(print())
-
-                //assert
-                .andExpect(status().is(500));
-    }
-
-    @Test
-    void postEmployeeWithoutIdTest() throws Exception {
-        //arrange
-        String body = "{\"name\": \"Test\", \"role\": \"Test\"}";
-
-        //act
-        mockMvc.perform(
-                        post(BASE_URL)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(body)
-                ).andDo(print())
-
-                //assert
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void deleteEmployeeTest() throws Exception {
         //arrange
-        when(repo.removeEmployeeById(1L)).thenReturn(true);
+        when(service.removeEmployeeById(1L)).thenReturn(true);
 
         //act
         mockMvc.perform(delete(BASE_URL + "/1")).andDo(print())
@@ -194,7 +160,7 @@ class EmployeeControllerTest {
     @Test
     void deleteNotExisitingEmployeeTest() throws Exception {
         //arrange
-        when(repo.removeEmployeeById(1L)).thenReturn(false);
+        when(service.removeEmployeeById(1L)).thenReturn(false);
 
         //act
         mockMvc.perform(delete(BASE_URL + "/1")).andDo(print())

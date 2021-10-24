@@ -5,6 +5,7 @@ import th.dojo.springbootdojo.model.Employee;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/v1")
 public interface EmployeeController {
 

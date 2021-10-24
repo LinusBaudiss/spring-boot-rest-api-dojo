@@ -5,18 +5,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import th.dojo.springbootdojo.model.Employee;
-import th.dojo.springbootdojo.service.EmployeeServiceImpl;
+import th.dojo.springbootdojo.service.EmployeeService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class EmployeeControllerImpl implements EmployeeController {
 
-    private final EmployeeServiceImpl repository;
+    private final EmployeeService repository;
 
     @Autowired
-    public EmployeeControllerImpl(EmployeeServiceImpl repository) {
+    public EmployeeControllerImpl(EmployeeService repository) {
         this.repository = repository;
     }
 
@@ -42,22 +41,13 @@ public class EmployeeControllerImpl implements EmployeeController {
                 })
                 .orElseGet(() -> {
                     newEmployee.setId(id);
-                    return repository.saveEmployee(newEmployee);
+                    return repository.createEmployee(newEmployee);
                 });
     }
 
     @Override
     public Employee postEmployee(Employee newEmployee) {
-        Long id = newEmployee.getId();
-        if (id != null) {
-            Optional<Employee> employee = repository.findEmployeeById(id);
-            if (employee.isPresent()) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-            } else {
-                return repository.saveEmployee(newEmployee);
-            }
-        }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        return repository.createEmployee(newEmployee);
     }
 
     @Override

@@ -53,7 +53,7 @@ class EmployeeServiceTest {
         //arrange
         Employee employee = new Employee(1L, "test", "test");
         //act
-        Employee result = service.saveEmployee(employee);
+        Employee result = service.createEmployee(employee);
         //assert
         assertThat(result).isEqualTo(employee);
         assertThat(service.findEmployees().size()).isEqualTo(1);
@@ -83,6 +83,54 @@ class EmployeeServiceTest {
         assertThat(result).isFalse();
         assertThat(service.findEmployees().size()).isEqualTo(1);
         assertThat(service.findEmployees().get(0)).isEqualTo(employee);
+    }
+
+    @Test
+    void getNextIdEmptyListTest() {
+        //arrange
+        //act
+        Long result = service.getNextId();
+        //assert
+        assertThat(result).isEqualTo(1L);
+    }
+
+    @Test
+    void getNextIdTest() {
+        //arrange
+        Employee employee = new Employee(4L, "test", "test");
+        repo.getEmployees().add(employee);
+        //act
+        Long result = service.getNextId();
+        //assert
+        assertThat(result).isEqualTo(5L);
+    }
+
+    @Test
+    void getNextIdTwoEmployeesTest() {
+        //arrange
+        Employee employee1 = new Employee(1L, "test", "test");
+        Employee employee2 = new Employee(2L, "test", "test");
+        repo.getEmployees().add(employee1);
+        repo.getEmployees().add(employee2);
+        //act
+        Long result = service.getNextId();
+        //assert
+        assertThat(result).isEqualTo(3L);
+    }
+
+    @Test
+    void getNextIdMultipleEmployeesTest() {
+        //arrange
+        Employee employee1 = new Employee(1L, "test", "test");
+        Employee employee2 = new Employee(2L, "test", "test");
+        Employee employee3 = new Employee(5L, "test", "test");
+        repo.getEmployees().add(employee1);
+        repo.getEmployees().add(employee2);
+        repo.getEmployees().add(employee3);
+        //act
+        Long result = service.getNextId();
+        //assert
+        assertThat(result).isEqualTo(3L);
     }
 
 }

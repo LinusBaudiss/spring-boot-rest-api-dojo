@@ -14,7 +14,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private List<Employee> data;
 
     @Autowired
-    public EmployeeServiceImpl(EmployeeRepository data){
+    public EmployeeServiceImpl(EmployeeRepository data) {
         this.data = data.getEmployees();
     }
 
@@ -33,7 +33,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee saveEmployee(Employee employee) {
+    public Employee createEmployee(Employee employee) {
+        employee.setId(getNextId());
         data.add(employee);
         return employee;
     }
@@ -46,5 +47,29 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<Employee> findEmployees() {
         return data;
+    }
+
+    @Override
+    public Long getNextId() {
+        //empty list -> 1
+        int size = data.size();
+        if (size == 0) {
+            return 1L;
+        }
+        //single employee in list -> id++
+        if (size == 1) {
+            return data.get(0).getId() + 1;
+        }
+        //check for "id" gaps in list
+        for (int i = 0; i < size - 1; i++) {
+            Employee e = data.get(i);
+            Long id = e.getId();
+            Employee nextE = data.get(i + 1);
+            if (id + 1 != nextE.getId()) {
+                return id + 1;
+            }
+        }
+        //no gaps? -> lastId++
+        return data.get(size - 1).getId() + 1;
     }
 }
