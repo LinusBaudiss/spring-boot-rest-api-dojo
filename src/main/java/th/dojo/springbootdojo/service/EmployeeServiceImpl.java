@@ -14,7 +14,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private List<Employee> data;
 
     @Autowired
-    public EmployeeServiceImpl(EmployeeRepository data){
+    public EmployeeServiceImpl(EmployeeRepository data) {
         this.data = data.getEmployees();
     }
 
@@ -25,7 +25,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee saveEmployee(Employee employee) {
+    public Employee createEmployee(Employee employee) {
         //TODO
         return null;
     }
@@ -39,6 +39,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<Employee> findEmployees() {
         //TODO
+        return null;
+    }
+
+    @Override
+    public Long getNextId() {
+        //TODO
+        //empty list -> 1
+        //single employee in list -> id++
+        //check for "id" gaps in list
+        //no gaps? -> lastId++
         return null;
     }
 }

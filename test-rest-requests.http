@@ -40,42 +40,16 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "id": 4,
   "name": "Luke Skywalker",
-  "role": "Cooler Typ"
+  "role": "Jedi Meister"
 }
 
 ###
 
-POST http://localhost:8080/api/v1/employees
-Accept: application/json
-Content-Type: application/json
-
-{
-  "id": 2,
-  "name": "fail",
-  "role": "fail"
-}
-
-###
-
-POST http://localhost:8080/api/v1/employees
-Accept: application/json
-Content-Type: application/json
-
-{
-  "name": "fail",
-  "role": "fail"
-}
-
-###
-
-DELETE http://localhost:8080/api/v1/employees/1
+DELETE http://localhost:8080/api/v1/employees/2
 Accept: application/json
 
 ###
 
 DELETE http://localhost:8080/api/v1/employees/5
 Accept: application/json
-
-###
