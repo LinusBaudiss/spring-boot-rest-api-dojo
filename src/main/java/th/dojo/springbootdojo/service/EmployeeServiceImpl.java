@@ -1,75 +1,57 @@
 package th.dojo.springbootdojo.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import th.dojo.springbootdojo.model.Employee;
+import th.dojo.springbootdojo.model.EmployeeDto;
 import th.dojo.springbootdojo.repository.EmployeeRepository;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
+@AllArgsConstructor
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private List<Employee> data;
+    private EmployeeRepository repo;
 
-    @Autowired
-    public EmployeeServiceImpl(EmployeeRepository data) {
-        this.data = data.getEmployees();
+    @Override
+    public Optional<Employee> findEmployeeById(BigInteger id) {
+        return repo.findById(id);
     }
 
     @Override
-    public Optional<Employee> findEmployeeById(Long id) {
-        Employee employee = data
-                .stream()
-                .filter(e -> id.equals(e.getId()))
-                .findFirst()
-                .orElse(null);
-
-        if (employee == null) {
-            return Optional.empty();
+    public Employee createEmployee(EmployeeDto employeeDto) {
+        Employee employee = Employee
+                .builder()
+                .name(employeeDto.getName())
+                .role(employeeDto.getRole())
+                .build();
+        if (BigInteger.ZERO.equals(repo.countAllDocuments())) {
+            employee.setId(BigInteger.ONE);
+        } else {
+            employee.setId(findLastEmployee().getId().add(BigInteger.ONE));
         }
-        return Optional.of(employee);
+        return repo.save(employee);
     }
 
     @Override
-    public Employee createEmployee(Employee employee) {
-        employee.setId(getNextId());
-        data.add(employee);
-        return employee;
-    }
-
-    @Override
-    public boolean removeEmployeeById(Long id) {
-        return data.removeIf(e -> id.equals(e.getId()));
+    public boolean removeEmployeeById(BigInteger id) {
+        if (repo.existsById(id)) {
+            repo.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     @Override
     public List<Employee> findEmployees() {
-        return data;
+        return repo.findAll();
     }
 
     @Override
-    public Long getNextId() {
-        //empty list -> 1
-        int size = data.size();
-        if (size == 0) {
-            return 1L;
-        }
-        //single employee in list -> id++
-        if (size == 1) {
-            return data.get(0).getId() + 1;
-        }
-        //check for "id" gaps in list
-        for (int i = 0; i < size - 1; i++) {
-            Employee e = data.get(i);
-            Long id = e.getId();
-            Employee nextE = data.get(i + 1);
-            if (id + 1 != nextE.getId()) {
-                return id + 1;
-            }
-        }
-        //no gaps? -> lastId++
-        return data.get(size - 1).getId() + 1;
+    public Employee findLastEmployee() {
+        return repo.findFirstByOrderByIdDesc();
     }
 }
