@@ -5,54 +5,53 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import th.dojo.springbootdojo.model.Employee;
+import th.dojo.springbootdojo.model.EmployeeDto;
 import th.dojo.springbootdojo.service.EmployeeService;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @RestController
 public class EmployeeControllerImpl implements EmployeeController {
 
-    private final EmployeeService repository;
+    private final EmployeeService service;
 
     @Autowired
-    public EmployeeControllerImpl(EmployeeService repository) {
-        this.repository = repository;
+    public EmployeeControllerImpl(EmployeeService service) {
+        this.service = service;
     }
 
     @Override
     public List<Employee> getAllEmployees() {
-        return repository.findEmployees();
+        return service.findEmployees();
     }
 
     @Override
-    public Employee getEmployeeById(Long id) {
-        return repository.findEmployeeById(id)
+    public Employee getEmployeeById(BigInteger id) {
+        return service.findEmployeeById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @Override
-    public Employee putEmployeeById(Employee newEmployee,
-                                    Long id) {
-        return repository.findEmployeeById(id)
+    public Employee putEmployeeById(EmployeeDto employeeDto,
+                                    BigInteger id) {
+        return service.findEmployeeById(id)
                 .map(employee -> {
-                    employee.setName(newEmployee.getName());
-                    employee.setRole(newEmployee.getRole());
+                    employee.setName(employeeDto.getName());
+                    employee.setRole(employeeDto.getRole());
                     return employee;
                 })
-                .orElseGet(() -> {
-                    newEmployee.setId(id);
-                    return repository.createEmployee(newEmployee);
-                });
+                .orElseGet(() -> service.createEmployee(employeeDto));
     }
 
     @Override
-    public Employee postEmployee(Employee newEmployee) {
-        return repository.createEmployee(newEmployee);
+    public Employee postEmployee(EmployeeDto employeeDto) {
+        return service.createEmployee(employeeDto);
     }
 
     @Override
-    public void deleteEmployee(Long id) {
-        if (!repository.removeEmployeeById(id)) {
+    public void deleteEmployee(BigInteger id) {
+        if (!service.removeEmployeeById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }

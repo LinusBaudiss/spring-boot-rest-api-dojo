@@ -1,12 +1,14 @@
 package th.dojo.springbootdojo.service;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import th.dojo.springbootdojo.model.Employee;
+import th.dojo.springbootdojo.model.EmployeeDto;
 import th.dojo.springbootdojo.repository.EmployeeRepository;
 
-import java.util.ArrayList;
+import java.math.BigInteger;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,27 +16,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class EmployeeServiceTest {
 
-    private EmployeeServiceImpl service;
+    @Autowired
+    private EmployeeService service;
+    @Autowired
     private EmployeeRepository repo;
 
     @Test
-    void contextLoads() throws Exception {
+    void contextLoads() {
         assertThat(service).isNotNull();
     }
 
-    @BeforeEach
-    void init() {
-        repo = new EmployeeRepository(new ArrayList<>());
-        service = new EmployeeServiceImpl(repo);
+    @AfterEach
+    void killData() {
+        repo.deleteAll();
     }
 
     @Test
     void findByIdExistsTest() {
         //arrange
-        Employee employee = new Employee(1L, "test", "test");
-        repo.getEmployees().add(employee);
+        Employee employee = new Employee(BigInteger.ONE, "test", "test");
+        repo.save(employee);
         //act
-        Optional<Employee> result = service.findEmployeeById(1L);
+        Optional<Employee> result = service.findEmployeeById(BigInteger.ONE);
         //assert
         assertThat(result).isEqualTo(Optional.of(employee));
     }
@@ -43,7 +46,7 @@ class EmployeeServiceTest {
     void findByIdFailsTest() {
         //arrange
         //act
-        Optional<Employee> result = service.findEmployeeById(1L);
+        Optional<Employee> result = service.findEmployeeById(BigInteger.ONE);
         //assert
         assertThat(result).isEmpty();
     }
@@ -51,9 +54,10 @@ class EmployeeServiceTest {
     @Test
     void saveTest() {
         //arrange
-        Employee employee = new Employee(1L, "test", "test");
+        EmployeeDto employeeDto = new EmployeeDto("test", "test");
+        Employee employee = new Employee(BigInteger.ONE, "test", "test");
         //act
-        Employee result = service.createEmployee(employee);
+        Employee result = service.createEmployee(employeeDto);
         //assert
         assertThat(result).isEqualTo(employee);
         assertThat(service.findEmployees().size()).isEqualTo(1);
@@ -63,10 +67,10 @@ class EmployeeServiceTest {
     @Test
     void removeByIdTest() {
         //arrange
-        Employee employee = new Employee(1L, "test", "test");
-        repo.getEmployees().add(employee);
+        Employee employee = new Employee(BigInteger.ONE, "test", "test");
+        repo.save(employee);
         //act
-        boolean result = service.removeEmployeeById(1L);
+        boolean result = service.removeEmployeeById(BigInteger.ONE);
         //assert
         assertThat(result).isTrue();
         assertThat(service.findEmployees().size()).isZero();
@@ -75,62 +79,13 @@ class EmployeeServiceTest {
     @Test
     void removeByIdFailsTest() {
         //arrange
-        Employee employee = new Employee(1L, "test", "test");
-        repo.getEmployees().add(employee);
+        Employee employee = new Employee(BigInteger.ONE, "test", "test");
+        repo.save(employee);
         //act
-        boolean result = service.removeEmployeeById(2L);
+        boolean result = service.removeEmployeeById(BigInteger.valueOf(2L));
         //assert
         assertThat(result).isFalse();
         assertThat(service.findEmployees().size()).isEqualTo(1);
         assertThat(service.findEmployees().get(0)).isEqualTo(employee);
     }
-
-    @Test
-    void getNextIdEmptyListTest() {
-        //arrange
-        //act
-        Long result = service.getNextId();
-        //assert
-        assertThat(result).isEqualTo(1L);
-    }
-
-    @Test
-    void getNextIdTest() {
-        //arrange
-        Employee employee = new Employee(4L, "test", "test");
-        repo.getEmployees().add(employee);
-        //act
-        Long result = service.getNextId();
-        //assert
-        assertThat(result).isEqualTo(5L);
-    }
-
-    @Test
-    void getNextIdTwoEmployeesTest() {
-        //arrange
-        Employee employee1 = new Employee(1L, "test", "test");
-        Employee employee2 = new Employee(2L, "test", "test");
-        repo.getEmployees().add(employee1);
-        repo.getEmployees().add(employee2);
-        //act
-        Long result = service.getNextId();
-        //assert
-        assertThat(result).isEqualTo(3L);
-    }
-
-    @Test
-    void getNextIdMultipleEmployeesTest() {
-        //arrange
-        Employee employee1 = new Employee(1L, "test", "test");
-        Employee employee2 = new Employee(2L, "test", "test");
-        Employee employee3 = new Employee(5L, "test", "test");
-        repo.getEmployees().add(employee1);
-        repo.getEmployees().add(employee2);
-        repo.getEmployees().add(employee3);
-        //act
-        Long result = service.getNextId();
-        //assert
-        assertThat(result).isEqualTo(3L);
-    }
-
 }
