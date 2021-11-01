@@ -1,37 +1,41 @@
 package th.dojo.springbootdojo.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import th.dojo.springbootdojo.model.Employee;
+import th.dojo.springbootdojo.model.EmployeeDto;
 import th.dojo.springbootdojo.repository.EmployeeRepository;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
+@AllArgsConstructor
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private List<Employee> data;
+    private EmployeeRepository repo;
 
-    @Autowired
-    public EmployeeServiceImpl(EmployeeRepository data) {
-        this.data = data.getEmployees();
+    @Override
+    public Optional<Employee> findEmployeeById(BigInteger id) {
+        //TODO
+        return Optional.empty();
     }
 
     @Override
-    public Optional<Employee> findEmployeeById(Long id) {
+    public Employee createEmployee(EmployeeDto employee) {
         //TODO
         return null;
     }
 
     @Override
-    public Employee createEmployee(Employee employee) {
+    public Employee updateEmployee(Employee employee, EmployeeDto employeeDto) {
         //TODO
         return null;
     }
 
     @Override
-    public boolean removeEmployeeById(Long id) {
+    public boolean removeEmployeeById(BigInteger id) {
         //TODO
         return false;
     }
@@ -43,12 +47,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Long getNextId() {
+    public Employee findLastEmployee() {
         //TODO
-        //empty list -> 1
-        //single employee in list -> id++
-        //check for "id" gaps in list
-        //no gaps? -> lastId++
         return null;
     }
 }

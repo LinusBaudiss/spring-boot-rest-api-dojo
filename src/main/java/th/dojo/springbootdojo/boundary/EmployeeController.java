@@ -2,10 +2,12 @@ package th.dojo.springbootdojo.boundary;
 
 import org.springframework.web.bind.annotation.*;
 import th.dojo.springbootdojo.model.Employee;
+import th.dojo.springbootdojo.model.EmployeeDto;
 
+import java.math.BigInteger;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = {"http://localhost:4200", "https://besser54.github.io"})
 @RequestMapping("/api/v1")
 public interface EmployeeController {
 
@@ -13,16 +15,16 @@ public interface EmployeeController {
     List<Employee> getAllEmployees();
 
     @GetMapping("/employees/{id}")
-    Employee getEmployeeById(@PathVariable Long id);
+    Employee getEmployeeById(@PathVariable BigInteger id);
 
     @PutMapping("/employees/{id}")
-    Employee putEmployeeById(@RequestBody Employee newEmployee,
-                             @PathVariable Long id);
+    Employee putEmployeeById(@RequestBody EmployeeDto newEmployee,
+                             @PathVariable BigInteger id);
 
     @PostMapping("/employees")
-    Employee postEmployee(@RequestBody Employee newEmployee);
+    Employee postEmployee(@RequestBody EmployeeDto newEmployee);
 
     @DeleteMapping("/employees/{id}")
-    void deleteEmployee(@PathVariable Long id);
+    void deleteEmployee(@PathVariable BigInteger id);
 
 }

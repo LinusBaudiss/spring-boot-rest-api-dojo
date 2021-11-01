@@ -9,8 +9,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import th.dojo.springbootdojo.model.Employee;
-import th.dojo.springbootdojo.service.EmployeeServiceImpl;
+import th.dojo.springbootdojo.model.EmployeeDto;
+import th.dojo.springbootdojo.service.EmployeeService;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,23 +35,27 @@ class EmployeeControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private EmployeeControllerImpl controller;
+
     @MockBean
-    private EmployeeServiceImpl service;
+    private EmployeeService service;
 
     @Autowired
     private ObjectMapper mapper;
 
     @Test
-    void contextLoads() throws Exception {
+    void contextLoads() {
         assertThat(controller).isNotNull();
     }
 
     @Test
     void getAllEmployeesTest() throws Exception {
         //arrange
-        Employee employee1 = new Employee(1L, "test", "test");
-        Employee employee2 = new Employee(2L, "test test", "test test");
-        when(service.findEmployees()).thenReturn(List.of(employee1, employee2));
+        List<Employee> list = new ArrayList<>();
+        Employee employee1 = new Employee(BigInteger.ONE, "test", "test");
+        Employee employee2 = new Employee(BigInteger.valueOf(2L), "test test", "test test");
+        list.add(employee1);
+        list.add(employee2);
+        when(service.findEmployees()).thenReturn(list);
 
         //act
         mockMvc.perform(get(BASE_URL)).andDo(print())
@@ -62,8 +69,8 @@ class EmployeeControllerTest {
     @Test
     void getEmployeeByIdTest() throws Exception {
         //arrange
-        Employee testEmployee = new Employee(1L, "test", "test");
-        when(service.findEmployeeById(1L)).thenReturn(Optional.of(testEmployee));
+        Employee testEmployee = new Employee(BigInteger.ONE, "test", "test");
+        when(service.findEmployeeById(BigInteger.ONE)).thenReturn(Optional.of(testEmployee));
 
         //act
         mockMvc.perform(get(BASE_URL + "/1")).andDo(print())
@@ -76,7 +83,7 @@ class EmployeeControllerTest {
     @Test
     void getEmployeeByIdFailsTest() throws Exception {
         //arrange
-        when(service.findEmployeeById(1L)).thenReturn(Optional.empty());
+        when(service.findEmployeeById(BigInteger.ONE)).thenReturn(Optional.empty());
 
         //act
         mockMvc.perform(get(BASE_URL + "/1")).andDo(print())
@@ -88,50 +95,57 @@ class EmployeeControllerTest {
     @Test
     void putAlreadyExisitingEmployeeTest() throws Exception {
         //arrange
-        Employee testEmployee = new Employee(1L, "test", "test");
-        when(service.findEmployeeById(1L)).thenReturn(Optional.of(testEmployee));
+        Employee employee = new Employee(BigInteger.ONE, "test", "test");
+        EmployeeDto employeeDto = new EmployeeDto("test test", "test test");
+        Employee updatedEmployee = new Employee(BigInteger.ONE, "test test", "test test");
+        when(service.findEmployeeById(BigInteger.ONE)).thenReturn(Optional.of(employee));
+        when(service.updateEmployee(employee, employeeDto)).thenReturn(updatedEmployee);
 
-        String newEmployee = mapper.writeValueAsString(new Employee(1L, "test test", "test test"));
+        String inputEmployeeDto = mapper.writeValueAsString(employeeDto);
+        String outputEmployee = mapper.writeValueAsString(updatedEmployee);
 
         //act
         mockMvc.perform(
                         put(BASE_URL + "/1")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(newEmployee)
+                                .content(inputEmployeeDto)
                 ).andDo(print())
 
                 //assert
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(newEmployee)));
+                .andExpect(content().string(containsString(outputEmployee)));
     }
 
     @Test
     void putNewEmployeeTest() throws Exception {
         //arrange
-        Employee employee = new Employee(1L, "test", "test");
-        String newEmployee = mapper.writeValueAsString(employee);
-        when(service.findEmployeeById(1L)).thenReturn(Optional.empty());
-        when(service.createEmployee(employee)).thenReturn(employee);
+        EmployeeDto employeeDto = new EmployeeDto("test", "test");
+        Employee employee = new Employee(BigInteger.ONE, "test", "test");
+        when(service.findEmployeeById(BigInteger.ONE)).thenReturn(Optional.empty());
+        when(service.createEmployee(employeeDto)).thenReturn(employee);
+
+        String inputEmployeeDto = mapper.writeValueAsString(employeeDto);
+        String outputEmployee = mapper.writeValueAsString(employee);
 
         //act
         mockMvc.perform(
                         put(BASE_URL + "/1")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(newEmployee)
+                                .content(inputEmployeeDto)
                 ).andDo(print())
 
                 //assert
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(newEmployee)));
+                .andExpect(content().string(containsString(outputEmployee)));
     }
 
     @Test
     void postNewEmployeeTest() throws Exception {
         //arrange
-        Employee employee = new Employee("test", "test");
-        Employee expectedEmployee = new Employee(1L, "test", "test");
+        EmployeeDto employeeDto = new EmployeeDto("test", "test");
+        Employee employee = new Employee(BigInteger.ONE, "test", "test");
         String newEmployee = mapper.writeValueAsString(employee);
-        when(service.createEmployee(employee)).thenReturn(employee);
+        when(service.createEmployee(employeeDto)).thenReturn(employee);
 
         //act
         mockMvc.perform(
@@ -148,7 +162,7 @@ class EmployeeControllerTest {
     @Test
     void deleteEmployeeTest() throws Exception {
         //arrange
-        when(service.removeEmployeeById(1L)).thenReturn(true);
+        when(service.removeEmployeeById(BigInteger.ONE)).thenReturn(true);
 
         //act
         mockMvc.perform(delete(BASE_URL + "/1")).andDo(print())
@@ -160,7 +174,7 @@ class EmployeeControllerTest {
     @Test
     void deleteNotExisitingEmployeeTest() throws Exception {
         //arrange
-        when(service.removeEmployeeById(1L)).thenReturn(false);
+        when(service.removeEmployeeById(BigInteger.ONE)).thenReturn(false);
 
         //act
         mockMvc.perform(delete(BASE_URL + "/1")).andDo(print())
