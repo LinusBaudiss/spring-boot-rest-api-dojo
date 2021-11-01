@@ -95,21 +95,25 @@ class EmployeeControllerTest {
     @Test
     void putAlreadyExisitingEmployeeTest() throws Exception {
         //arrange
-        Employee testEmployee = new Employee(BigInteger.ONE, "test", "test");
-        when(service.findEmployeeById(BigInteger.ONE)).thenReturn(Optional.of(testEmployee));
+        Employee employee = new Employee(BigInteger.ONE, "test", "test");
+        EmployeeDto employeeDto = new EmployeeDto("test test", "test test");
+        Employee updatedEmployee = new Employee(BigInteger.ONE, "test test", "test test");
+        when(service.findEmployeeById(BigInteger.ONE)).thenReturn(Optional.of(employee));
+        when(service.updateEmployee(employee, employeeDto)).thenReturn(updatedEmployee);
 
-        String newEmployee = mapper.writeValueAsString(new Employee(BigInteger.ONE, "test test", "test test"));
+        String inputEmployeeDto = mapper.writeValueAsString(employeeDto);
+        String outputEmployee = mapper.writeValueAsString(updatedEmployee);
 
         //act
         mockMvc.perform(
                         put(BASE_URL + "/1")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(newEmployee)
+                                .content(inputEmployeeDto)
                 ).andDo(print())
 
                 //assert
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(newEmployee)));
+                .andExpect(content().string(containsString(outputEmployee)));
     }
 
     @Test
@@ -117,20 +121,22 @@ class EmployeeControllerTest {
         //arrange
         EmployeeDto employeeDto = new EmployeeDto("test", "test");
         Employee employee = new Employee(BigInteger.ONE, "test", "test");
-        String newEmployee = mapper.writeValueAsString(employee);
         when(service.findEmployeeById(BigInteger.ONE)).thenReturn(Optional.empty());
         when(service.createEmployee(employeeDto)).thenReturn(employee);
+
+        String inputEmployeeDto = mapper.writeValueAsString(employeeDto);
+        String outputEmployee = mapper.writeValueAsString(employee);
 
         //act
         mockMvc.perform(
                         put(BASE_URL + "/1")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(newEmployee)
+                                .content(inputEmployeeDto)
                 ).andDo(print())
 
                 //assert
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(newEmployee)));
+                .andExpect(content().string(containsString(outputEmployee)));
     }
 
     @Test

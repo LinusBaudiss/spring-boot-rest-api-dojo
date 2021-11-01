@@ -13,6 +13,8 @@ public interface EmployeeService {
 
     Employee createEmployee(EmployeeDto employee);
 
+    Employee updateEmployee(Employee employee, EmployeeDto employeeDto);
+
     boolean removeEmployeeById(BigInteger id);
 
     List<Employee> findEmployees();

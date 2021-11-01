@@ -37,6 +37,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public Employee updateEmployee(Employee employee, EmployeeDto employeeDto) {
+        employee.setName(employeeDto.getName());
+        employee.setRole(employeeDto.getRole());
+        return repo.save(employee);
+    }
+
+    @Override
     public boolean removeEmployeeById(BigInteger id) {
         if (repo.existsById(id)) {
             repo.deleteById(id);

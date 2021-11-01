@@ -10,6 +10,7 @@ import th.dojo.springbootdojo.service.EmployeeService;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class EmployeeControllerImpl implements EmployeeController {
@@ -35,13 +36,12 @@ public class EmployeeControllerImpl implements EmployeeController {
     @Override
     public Employee putEmployeeById(EmployeeDto employeeDto,
                                     BigInteger id) {
-        return service.findEmployeeById(id)
-                .map(employee -> {
-                    employee.setName(employeeDto.getName());
-                    employee.setRole(employeeDto.getRole());
-                    return employee;
-                })
-                .orElseGet(() -> service.createEmployee(employeeDto));
+        Optional<Employee> employee = service.findEmployeeById(id);
+        if (employee.isPresent()) {
+            return service.updateEmployee(employee.get(), employeeDto);
+        } else {
+            return service.createEmployee(employeeDto);
+        }
     }
 
     @Override

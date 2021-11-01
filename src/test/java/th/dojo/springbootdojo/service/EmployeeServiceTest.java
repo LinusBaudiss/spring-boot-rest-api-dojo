@@ -52,7 +52,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void saveTest() {
+    void createEmployeeTest() {
         //arrange
         EmployeeDto employeeDto = new EmployeeDto("test", "test");
         Employee employee = new Employee(BigInteger.ONE, "test", "test");
@@ -62,6 +62,20 @@ class EmployeeServiceTest {
         assertThat(result).isEqualTo(employee);
         assertThat(service.findEmployees().size()).isEqualTo(1);
         assertThat(service.findEmployees().get(0)).isEqualTo(employee);
+    }
+
+    @Test
+    void updateEmployeeTest(){
+        //arrange
+        Employee employee = new Employee(BigInteger.ONE, "test", "test");
+        EmployeeDto employeeDto = new EmployeeDto("test test", "test test");
+        Employee expectedEmployee = new Employee(BigInteger.ONE, "test test", "test test");
+        //act
+        Employee result = service.updateEmployee(employee, employeeDto);
+        //assert
+        assertThat(result).isEqualTo(expectedEmployee);
+        assertThat(service.findEmployees().size()).isEqualTo(1);
+        assertThat(service.findEmployees().get(0)).isEqualTo(expectedEmployee);
     }
 
     @Test
